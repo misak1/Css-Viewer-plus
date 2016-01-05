@@ -22,3 +22,8 @@ https://github.com/Misaki-Shibata/Alt-Viewer-plus/issues
 http://choosealicense.com/licenses/mit/
 
 以上、
+
+
+テストサイト
+http://d.hatena.ne.jp/mtoyoshi/20071111/1194759988
+http://kanonji.info/blog/2014/01/27/jquery%E3%81%A7keypress%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%92keycode%E4%BB%98%E3%81%8D%E3%81%A7%E7%99%BA%E7%81%AB%E3%81%95%E3%81%9B%E3%82%8B/

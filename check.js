@@ -100,16 +100,20 @@
       rcss = 'padding:0px;position:fixed;top:0;right:0;border:solid #ccc 1px;z-index:999;max-height:100%;overflow: auto;';
       tblcss = ' style=\'border-collapse:collapse;background:hsla(0,0%,0%,.75);\'';
       tdlcss = ' style=\'color:#fff;padding:0 .5em 0 .5em;border-bottom:solid #fff 2px;text-align:left;\'';
+      tdlcss1 =' style=\'color:#fff;padding:0 .5em 0 .5em;border-bottom:solid #fff 2px;text-align:right; height: 300px;width: 300px;opacity: 0.65;\''
       tdlcss2 =' style=\'color:#fff;padding:0 .5em 0 .5em;border-bottom:solid #fff 2px;text-align:right; height: 800px;width: 300px;opacity: 0.65;\''
       tdrcss = ' style=\'padding:0 0 0 1em;border-bottom:solid #fff 2px;text-align:left;background-color:hsla(0,0%,0%,.45);color:#F0EA30;width:250px;\'';
       textariarcss = ' style=\'width: 100% ;height: 100%;\'';
       r.id = rid;
       r.style.cssText = rcss;
-      h = '<style>\n@-webkit-keyframes anime1 {\n0% {opacity: .2;}\n100% {opacity: 1;}\n}\n.img_blink{-webkit-animation: anime1 0.5s ease 0s infinite alternate;}\n</style>';
+      h = '<style>' + "\n";
+      h += '@-webkit-keyframes anime1 {\n0% {opacity: .2;}\n100% {opacity: 1;}\n}\n.cvp_blink{-webkit-animation: anime1 0.5s ease 0s infinite alternate; border:3px solid #F82F66;}\n';
+      h += '</style>' + "\n";
       h += '<tr><td colspan="2" style="padding:1em 0 0 1em;border-bottom:solid #fff 2px;text-align:left;color:#fff;white-space:pre-wrap;max-width:500px;line-height:1;font-size: 12px;">';
       h += '<span class="CSS_VIEWER_CLOSE" style="background-color: hsla(0,100%,100%,1);color: #000;position: absolute;right: 0;top: 0;padding: 0.5em 1em;">Close✕</span>';
       h += '<table' + tblcss + ' class="CSS_VIEWER_TABLE">';
-      h += '<tr><td' + tdlcss + '>"c"キーか"s"キーでキャプチャ</td></tr>';
+      h += '<tr><td' + tdlcss + '>"c"キーか"s"キーでcss取得</td></tr>';
+      h += '<tr><td' + tdlcss1 + '><textarea' + textariarcss +' id="CSS_VIEWER_CONSOLE0" readonly></textarea></td></tr>';
       h += '<tr><td' + tdlcss2 + '><textarea' + textariarcss +' id="CSS_VIEWER_CONSOLE" readonly></textarea></td></tr>';
       h += '</table>';
       e('body')[0].appendChild(r);
@@ -118,14 +122,23 @@
 
       var script = document.createElement( 'script' );
       script.type = 'text/javascript';
-      // script.defer = 'defer';
+      script.defer = 'defer';
       script.src = '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js';
       r.parentNode.insertBefore(script, null);
 
       var script2 = document.createElement( 'script' );
       script2.type = 'text/javascript';
-      // script2.defer = 'defer';
+      script2.defer = 'defer';
       var cvh = '';
+      cvh += 'function CVP(){'+"\n";
+      cvh += ' console.log("CVP");'+"\n";
+      // jQuery読み込み待ち
+      cvh += 'if (typeof(jQuery) == "undefined") {'+"\n";
+      cvh += '  setTimeout(CVP(),1000);'+"\n";
+      cvh += ' return;'+"\n";
+      cvh += '}'+"\n";
+      cvh += ' console.log("jquery load.");'+"\n";
+      // jQueryを"c$"の別名で登録
       cvh += 'var c$ = jQuery.noConflict();'+"\n";
       cvh += 'console.log("jQuery version" , c$.fn.jquery);'+"\n";
       // cvh += 'c$("#CSS_VIEWER_CONSOLE").text("ajgeo");'+"\n";
@@ -133,31 +146,39 @@
       cvh += 'var c$target = c$("body");'+"\n";
       cvh += 'var cssTxt = "";'+"\n";
       cvh += 'c$( "*" ).mouseenter(function( event ) {'+"\n";
-      // cvh += ' console.log(event);'+"\n";
-      // cvh += '  c$target = c$(event.srcElement);'+"\n";
       cvh += '  c$target = c$(event.target);'+"\n";
-      // cvh += ' console.log(c$target[0]);'+"\n";
+      cvh += '      c$("#CSS_VIEWER_CONSOLE0").text(c$target[0].outerHTML + "\\n");'+"\n";
+
+      // 枠線
+      cvh += 'var elm = c$("*");'+"\n";
+      cvh += 'if(elm){'+"\n";
+      cvh += '  elm.removeClass("cvp_blink");'+"\n";
+      cvh += '}'+"\n";
+      cvh += 'c$(c$target[0]).addClass("cvp_blink");'+"\n";
+      cvh += ''+"\n";
+
+
       cvh += '  var CSSRuleListObj = getMatchedCSSRules(c$target[0], "");'+"\n";
-      // cvh += ' console.log(CSSRuleListObj);'+"\n";
       cvh += '  if (CSSRuleListObj) {'+"\n";
       cvh += '    for(var i=0; i<CSSRuleListObj.length; i++){'+"\n";
       cvh += '      cssTxt = CSSRuleListObj[i].cssText;'+"\n";
+      cvh += '      console.log("cssTxt:" + cssTxt);'+"\n";
+      cvh += '      cssTxt = cssTxt.replace(/\.cvp_blink\s*\{.*?(})/i, "");'+"\n";
+      cvh += '      console.log("cssTxt2:" + cssTxt);'+"\n";
+
       cvh += '    }'+"\n";
       cvh += '  }'+"\n";
       cvh += '});'+"\n";
-      // cvh += 'c$("*").keypress(function (e) {'+"\n";
+      cvh += ''+"\n";
       cvh += 'c$("body").keypress(function (e) {'+"\n";
-      // cvh += 'c$("*").keydown(function (e) {'+"\n";
-      // cvh += 'c$("*").on("keydown", function(e) {'+"\n";
-      // cvh += ' console.log(e, e.which);'+"\n";
       cvh += ' console.log(e);'+"\n";
-      // cvh += ' console.log(e, e.which);'+"\n";
-      // cvh += ' console.log(cssTxt);'+"\n";
-
       cvh += '  if (e.which == 99 /* c */ || e.which == 115 /* s */){'+"\n";
       cvh += '   c$("#CSS_VIEWER_CONSOLE").text(c$("#CSS_VIEWER_CONSOLE").text() + cssTxt + "\\n");'+"\n";
       cvh += '  }'+"\n";
       cvh += '});'+"\n";
+
+      cvh += '};'+"\n";
+      cvh += 'CVP();'+"\n";
       script2.appendChild(document.createTextNode(cvh));
       r.parentNode.insertBefore(script2, null);
 
@@ -169,58 +190,7 @@
         }
       };
       window.scrollTo(0, 0);
-      Array.prototype.forEach.apply(document.querySelectorAll('.CSS_VIEWER_TABLE img'), [
-        function(e, i, a) {
-          e.addEventListener('mouseover', (function(event) {
-            var filename_ex;
-            filename_ex = event.target.src.match('.+/(.+?)([?#;].*)?$')[1];
-            var elm = document.querySelector('[src$="' + filename_ex + '"]');
-            if(elm){
-              elm.style.border = 'solid 3px #F82F66';
-              elm.classList.add('img_blink');
-            }
-          }), false);
-        }
-      ]);
-      Array.prototype.forEach.apply(document.querySelectorAll('.CSS_VIEWER_TABLE img'), [
-        function(e, i, a) {
-          e.addEventListener('mouseout', (function(event) {
-            var filename_ex;
-            filename_ex = event.target.src.match('.+/(.+?)([?#;].*)?$')[1];
-            var elm = document.querySelector('[src$="' + filename_ex + '"]');
-            if(elm){
-              elm.style.border = 'none';
-              elm.classList.remove('img_blink');
-            }
-          }), false);
-        }
-      ]);
-      Array.prototype.forEach.apply(document.querySelectorAll('.CSS_VIEWER_TABLE .CSS_VIEWER_TITLE'), [
-        function(e, i, a) {
-          e.addEventListener('mouseover', (function(event) {
-            var title;
-            title = event.target.innerText;
-            var elm = document.querySelector('[title$="' + title + '"]');
-            if(elm){
-              document.querySelector('[title$="' + title + '"]').style.border = 'solid 3px #F82F66';
-              document.querySelector('[title$="' + title + '"]').classList.add('img_blink');
-            }
-          }), false);
-        }
-      ]);
-      Array.prototype.forEach.apply(document.querySelectorAll('.CSS_VIEWER_TABLE .CSS_VIEWER_TITLE'), [
-        function(e, i, a) {
-          e.addEventListener('mouseout', (function(event) {
-            var title;
-            title = event.target.innerText;
-            var elm = document.querySelector('[title$="' + title + '"]');
-            if(elm){
-              elm.style.border = 'none';
-              elm.classList.remove('img_blink');
-            }
-          }), false);
-        }
-      ]);
+
       document.getElementById('ALP_RB_Close').onclick = function() {
         removeDOMElement('ALP_ReportBox');
       };

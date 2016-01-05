@@ -1,0 +1,20 @@
+{
+   "background": {
+      "scripts": [ "background.js","db.js"]
+   },
+   "browser_action": {
+      "default_icon": "icon-48.png",
+      "default_title": "Css Viewer plus"
+   },
+   "description": "img要素に設定された alt属性 または、title 属性を見える化します。head要素を表示させます。",
+   "icons": {
+      "19": "icon-19.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+   },
+   "manifest_version": 2,
+   "name": "Css Viewer plus",
+   "short_name": "Css Viewer",
+   "permissions": ["storage", "tabs", "http://*/*", "https://*/*" ],
+   "version": "1.0.1"
+}

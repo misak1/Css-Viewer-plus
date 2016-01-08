@@ -144,6 +144,7 @@
       // cvh += 'c$("#CSS_VIEWER_CONSOLE").text("ajgeo");'+"\n";
       cvh += ''+"\n";
       cvh += 'var c$target = c$("body");'+"\n";
+      cvh += 'var c$target2 = c$("body");'+"\n";
       cvh += 'var cssTxt = "";'+"\n";
       cvh += 'c$( "*" ).mouseenter(function( event ) {'+"\n";
       cvh += '  c$target = c$(event.target);'+"\n";
@@ -158,20 +159,17 @@
       cvh += ''+"\n";
 
 
-      cvh += '  var CSSRuleListObj = getMatchedCSSRules(c$target[0], "");'+"\n";
+      cvh += '  var CSSRuleListObj = getMatchedCSSRules(c$target2[0], "");'+"\n";
       cvh += '  if (CSSRuleListObj) {'+"\n";
       cvh += '    for(var i=0; i<CSSRuleListObj.length; i++){'+"\n";
-      cvh += '      cssTxt = CSSRuleListObj[i].cssText;'+"\n";
-      cvh += '      console.log("cssTxt:" + cssTxt);'+"\n";
-      cvh += '      cssTxt = cssTxt.replace(/\.cvp_blink\s*\{.*?(})/i, "");'+"\n";
-      cvh += '      console.log("cssTxt2:" + cssTxt);'+"\n";
+      cvh += '      var tmpcss = CSSRuleListObj[i].cssText;'+"\n";
+      cvh += '      cssTxt += tmpcss.replace(/\.cvp_blink\s*\{.*?(})/i, "");'+"\n";
 
       cvh += '    }'+"\n";
       cvh += '  }'+"\n";
       cvh += '});'+"\n";
       cvh += ''+"\n";
       cvh += 'c$("body").keypress(function (e) {'+"\n";
-      cvh += ' console.log(e);'+"\n";
       cvh += '  if (e.which == 99 /* c */ || e.which == 115 /* s */){'+"\n";
       cvh += '   c$("#CSS_VIEWER_CONSOLE").text(c$("#CSS_VIEWER_CONSOLE").text() + cssTxt + "\\n");'+"\n";
       cvh += '  }'+"\n";
